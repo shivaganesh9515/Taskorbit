@@ -1,1 +1,149 @@
-<p>teams works!</p>
+<div class="page-container">
+
+  <div class="page-header">
+    <h1>Teams</h1>
+    <button class="btn-primary" (click)="openCreateTeamModal()">+ New Team</button>
+  </div>
+
+  <!-- Filters -->
+  <app-card>
+    <div class="team-filters">
+      <input
+        class="search-input"
+        placeholder="Search teams or members…"
+        [(ngModel)]="searchTerm"
+        (input)="filterTeams()" />
+
+      <div class="filter-buttons">
+        <button
+          class="filter-btn"
+          [class.active]="selectedFilter === 'all'"
+          (click)="setFilter('all')">
+          All
+        </button>
+        <button
+          class="filter-btn"
+          [class.active]="selectedFilter === 'active'"
+          (click)="setFilter('active')">
+          Active
+        </button>
+        <button
+          class="filter-btn"
+          [class.active]="selectedFilter === 'archived'"
+          (click)="setFilter('archived')">
+          Archived
+        </button>
+      </div>
+    </div>
+  </app-card>
+
+  <!-- Teams Grid -->
+  <div class="teams-grid" *ngIf="filteredTeams.length">
+    <app-card class="team-card" *ngFor="let team of filteredTeams">
+      <div class="team-header">
+        <h3>{{ team.name }}</h3>
+        <span class="status-badge" [class.archived]="team.archived">
+          {{ team.archived ? 'Archived' : 'Active' }}
+        </span>
+      </div>
+
+      <p class="team-description">{{ team.description }}</p>
+
+      <div class="team-members">
+        <div
+          class="avatar"
+          *ngFor="let m of team.members.slice(0, 4)"
+          [title]="m.name + ' – ' + m.role">
+          {{ getInitials(m.name) }}
+        </div>
+        <span
+          *ngIf="team.members.length > 4"
+          class="extra-count">+{{ team.members.length - 4 }}</span>
+      </div>
+
+      <div class="team-actions">
+        <button class="btn-secondary small" (click)="openEditTeamModal(team)">Edit</button>
+        <button
+          class="btn-secondary small"
+          (click)="toggleArchive(team)">
+          {{ team.archived ? 'Restore' : 'Archive' }}
+        </button>
+        <button class="btn-primary small" (click)="manageTeamTasks(team)">
+          View Tasks
+        </button>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Empty State -->
+  <app-card *ngIf="!filteredTeams.length">
+    <div class="empty-state">
+      <p>No teams match your criteria.</p>
+      <button class="btn-primary" (click)="openCreateTeamModal()">Create Team</button>
+    </div>
+  </app-card>
+</div>
+
+<!-- Team Modal -->
+<div
+  class="modal-overlay"
+  *ngIf="showTeamModal"
+  (click)="closeTeamModal()">
+  <div
+    class="modal-content"
+    (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h3>{{ editMode ? 'Edit Team' : 'Create Team' }}</h3>
+      <button class="close-btn" (click)="closeTeamModal()">×</button>
+    </div>
+
+    <form class="team-form" (ngSubmit)="saveTeam()">
+      <div class="form-group">
+        <label>Team Name</label>
+        <input
+          name="name"
+          [(ngModel)]="currentTeam.name"
+          required />
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea
+          name="description"
+          rows="3"
+          [(ngModel)]="currentTeam.description"></textarea>
+      </div>
+
+      <!-- Member selector -->
+      <div class="form-group">
+        <label>Add Members</label>
+        <div class="member-list">
+          <div *ngFor="let user of availableUsers" class="member-item">
+            <input
+              type="checkbox"
+              [id]="user"
+              [checked]="isMemberSelected(user)"
+              (change)="toggleMember(user, $event)" />
+            <label [for]="user">{{ user }}</label>
+            <select
+              *ngIf="isMemberSelected(user)"
+              [(ngModel)]="memberRoles[user]"
+              [name]="'role-' + user">
+              <option value="Member">Member</option>
+              <option value="Manager">Manager</option>
+              <option value="Viewer">Viewer</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="closeTeamModal()">Cancel</button>
+        <button type="submit" class="btn-primary">
+          {{ editMode ? 'Update' : 'Create' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

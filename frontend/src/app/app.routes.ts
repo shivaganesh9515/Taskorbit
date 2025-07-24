@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { TasksComponent } from './pages/tasks/tasks';
 import { ProjectsComponent } from './pages/projects/projects';
-import { Teams } from './pages/teams/teams';
+import { TeamsComponent } from './pages/teams/teams';
 import { Reports } from './pages/reports/reports';
 import { Profile } from './pages/profile/profile';
 import { Login } from './pages/auth/login/login';
@@ -15,7 +15,7 @@ const rountes: Routes = [
     { path: 'dashboard', component: Dashboard },
     { path: 'tasks', component: TasksComponent },
     { path: 'projects', component: ProjectsComponent },
-    { path: 'teams', component: Teams },
+    { path: 'teams', component: TeamsComponent },
     { path: 'reports', component: Reports },
     { path: 'profile', component: Profile },
     { path: 'login', component: Login },
