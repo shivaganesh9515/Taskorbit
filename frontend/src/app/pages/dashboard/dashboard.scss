@@ -1,0 +1,147 @@
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.stats-card {
+  .stat-content {
+    text-align: center;
+    
+    h3 {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 4px;
+    }
+    
+    .stat-change {
+      font-size: 12px;
+      font-weight: 500;
+      
+      &.positive { color: #10b981; }
+      &.negative { color: #ef4444; }
+      &.neutral { color: #6b7280; }
+    }
+  }
+}
+
+.recent-tasks, .project-overview {
+  grid-column: span 2;
+  
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 16px;
+  }
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  
+  .task-name {
+    font-weight: 500;
+    color: #1f2937;
+  }
+  
+  .task-project {
+    font-size: 12px;
+    color: #6b7280;
+  }
+}
+
+.task-status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  
+  &.completed {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  
+  &.in-progress {
+    background-color: #dbeafe;
+    color: #1e40af;
+  }
+  
+  &.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.project-item {
+  .project-name {
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 8px;
+  }
+  
+  .project-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background-color: #f3f4f6;
+    border-radius: 3px;
+    overflow: hidden;
+    
+    .progress-fill {
+      height: 100%;
+      background-color: #4f46e5;
+      transition: width 0.3s ease;
+    }
+  }
+  
+  .progress-text {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+  }
+}
