@@ -1,1 +1,75 @@
-<p>login works!</p>
+<div class="auth-container">
+  <app-card class="auth-card">
+    <div class="auth-header">
+      <h1>Welcome to Taskorbit</h1>
+      <p>Sign in to your account</p>
+    </div>
+    
+    <form class="auth-form" (ngSubmit)="onLogin()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="credentials.email"
+          required
+          email
+          #emailInput="ngModel"
+          [class.error]="emailInput.invalid && emailInput.touched">
+        <div class="error-message" *ngIf="emailInput.invalid && emailInput.touched">
+          <span *ngIf="emailInput.errors?.['required']">Email is required</span>
+          <span *ngIf="emailInput.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-input">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            name="password"
+            [(ngModel)]="credentials.password"
+            required
+            minlength="6"
+            #passwordInput="ngModel"
+            [class.error]="passwordInput.invalid && passwordInput.touched">
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePassword()">
+            {{showPassword ? '👁️' : '👁️‍🗨️'}}
+          </button>
+        </div>
+        <div class="error-message" *ngIf="passwordInput.invalid && passwordInput.touched">
+          <span *ngIf="passwordInput.errors?.['required']">Password is required</span>
+          <span *ngIf="passwordInput.errors?.['minlength']">Password must be at least 6 characters</span>
+        </div>
+      </div>
+      
+      <div class="error-message" *ngIf="errorMessage">
+        {{errorMessage}}
+      </div>
+      
+      <button
+        type="submit"
+        class="btn-primary full-width"
+        [disabled]="loginForm.invalid || isLoading">
+        <span *ngIf="!isLoading">Sign In</span>
+        <span *ngIf="isLoading" class="loading-spinner">🔄 Signing in...</span>
+      </button>
+    </form>
+    
+    <div class="auth-footer">
+      <p>Don't have an account? <a routerLink="/signup">Sign up here</a></p>
+    </div>
+    
+    <div class="demo-credentials">
+      <h4>Demo Credentials:</h4>
+      <p><strong>Admin:</strong> admin.com / password</p>
+      <p><strong>Manager:</strong> manager.com / password</p>
+      <p><strong>User:</strong> user.com / password</p>
+    </div>
+  </app-card>
+</div>

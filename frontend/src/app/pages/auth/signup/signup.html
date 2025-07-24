@@ -1,1 +1,103 @@
-<p>signup works!</p>
+<div class="auth-container">
+  <app-card class="auth-card">
+    <div class="auth-header">
+      <h1>Join Taskorbit</h1>
+      <p>Create your account</p>
+    </div>
+    
+    <form class="auth-form" (ngSubmit)="onSignup()" #signupForm="ngForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          [(ngModel)]="signupData.name"
+          required
+          minlength="2"
+          #nameInput="ngModel"
+          [class.error]="nameInput.invalid && nameInput.touched">
+        <div class="error-message" *ngIf="nameInput.invalid && nameInput.touched">
+          <span *ngIf="nameInput.errors?.['required']">Name is required</span>
+          <span *ngIf="nameInput.errors?.['minlength']">Name must be at least 2 characters</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="signupData.email"
+          required
+          email
+          #emailInput="ngModel"
+          [class.error]="emailInput.invalid && emailInput.touched">
+        <div class="error-message" *ngIf="emailInput.invalid && emailInput.touched">
+          <span *ngIf="emailInput.errors?.['required']">Email is required</span>
+          <span *ngIf="emailInput.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-input">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            name="password"
+            [(ngModel)]="signupData.password"
+            required
+            minlength="6"
+            #passwordInput="ngModel"
+            [class.error]="passwordInput.invalid && passwordInput.touched">
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePassword()">
+            {{showPassword ? '👁️' : '👁️‍🗨️'}}
+          </button>
+        </div>
+        <div class="error-message" *ngIf="passwordInput.invalid && passwordInput.touched">
+          <span *ngIf="passwordInput.errors?.['required']">Password is required</span>
+          <span *ngIf="passwordInput.errors?.['minlength']">Password must be at least 6 characters</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          [(ngModel)]="signupData.confirmPassword"
+          required
+          #confirmPasswordInput="ngModel"
+          [class.error]="confirmPasswordInput.invalid && confirmPasswordInput.touched || passwordMismatch">
+        <div class="error-message" *ngIf="confirmPasswordInput.invalid && confirmPasswordInput.touched">
+          <span *ngIf="confirmPasswordInput.errors?.['required']">Please confirm your password</span>
+        </div>
+        <div class="error-message" *ngIf="passwordMismatch">
+          Passwords do not match
+        </div>
+      </div>
+      
+      <div class="error-message" *ngIf="errorMessage">
+        {{errorMessage}}
+      </div>
+      
+      <button
+        type="submit"
+        class="btn-primary full-width"
+        [disabled]="signupForm.invalid || passwordMismatch || isLoading">
+        <span *ngIf="!isLoading">Create Account</span>
+        <span *ngIf="isLoading" class="loading-spinner">🔄 Creating account...</span>
+      </button>
+    </form>
+    
+    <div class="auth-footer">
+      <p>Already have an account? <a routerLink="/login">Sign in here</a></p>
+    </div>
+  </app-card>
+</div>
