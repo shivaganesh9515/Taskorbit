@@ -1,10 +1,152 @@
 <div class="page-container">
   <div class="page-header">
     <h1>Projects</h1>
-    <button class="btn-primary">+ New Project</button>
+    <button class="btn-primary" (click)="openCreateProjectModal()">+ New Project</button>
   </div>
   
+  <!-- Project Stats Overview -->
+  <div class="project-stats">
+    <app-card class="stat-card">
+      <div class="stat-content">
+        <h3>Total Projects</h3>
+        <div class="stat-number">{{getTotalProjects()}}</div>
+      </div>
+    </app-card>
+    
+    <app-card class="stat-card">
+      <div class="stat-content">
+        <h3>Active Projects</h3>
+        <div class="stat-number">{{getActiveProjects()}}</div>
+      </div>
+    </app-card>
+    
+    <app-card class="stat-card">
+      <div class="stat-content">
+        <h3>Completed</h3>
+        <div class="stat-number">{{getCompletedProjects()}}</div>
+      </div>
+    </app-card>
+    
+    <app-card class="stat-card">
+      <div class="stat-content">
+        <h3>On Hold</h3>
+        <div class="stat-number">{{getOnHoldProjects()}}</div>
+      </div>
+    </app-card>
+  </div>
+
+  <!-- Project Filters -->
   <app-card>
-    <p>Project management interface will be built here.</p>
+    <div class="project-filters">
+      <div class="search-section">
+        <input 
+          type="text" 
+          placeholder="Search projects..." 
+          class="search-input"
+          [(ngModel)]="searchTerm"
+          (input)="filterProjects()">
+      </div>
+      
+      <div class="filter-buttons">
+        <button 
+          class="filter-btn" 
+          [class.active]="selectedFilter === 'all'"
+          (click)="setFilter('all')">
+          All Projects
+        </button>
+        <button 
+          class="filter-btn" 
+          [class.active]="selectedFilter === 'active'"
+          (click)="setFilter('active')">
+          Active
+        </button>
+        <button 
+          class="filter-btn" 
+          [class.active]="selectedFilter === 'completed'"
+          (click)="setFilter('completed')">
+          Completed
+        </button>
+        <button 
+          class="filter-btn" 
+          [class.active]="selectedFilter === 'on-hold'"
+          (click)="setFilter('on-hold')">
+          On Hold
+        </button>
+      </div>
+    </div>
+  </app-card>
+
+  <!-- Projects Grid -->
+  <div class="projects-grid" *ngIf="filteredProjects.length > 0">
+    <app-card class="project-card" *ngFor="let project of filteredProjects">
+      <div class="project-header">
+        <div class="project-title">
+          <h3>{{project.name}}</h3>
+          <span class="project-status" [class]="'status-' + project.status.replace(' ', '-')">
+            {{project.status}}
+          </span>
+        </div>
+        <div class="project-actions">
+          <button class="action-btn" (click)="editProject(project)">✏️</button>
+          <button class="action-btn delete" (click)="deleteProject(project.id)">🗑️</button>
+        </div>
+      </div>
+      
+      <div class="project-description">
+        <p>{{project.description}}</p>
+      </div>
+      
+      <div class="project-progress">
+        <div class="progress-header">
+          <span class="progress-label">Progress</span>
+          <span class="progress-percentage">{{project.progress}}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="project.progress"></div>
+        </div>
+      </div>
+      
+      <div class="project-details">
+        <div class="project-detail">
+          <span class="detail-label">Team</span>
+          <div class="team-avatars">
+            <div class="avatar" *ngFor="let member of project.team" [title]="member">
+              {{getInitials(member)}}
+            </div>
+            <div class="team-count" *ngIf="project.team.length > 3">
+              +{{project.team.length - 3}}
+            </div>
+          </div>
+        </div>
+        
+        <div class="project-detail">
+          <span class="detail-label">Due Date</span>
+          <span class="due-date" [class.overdue]="isOverdue(project.dueDate)">
+            {{formatDate(project.dueDate)}}
+          </span>
+        </div>
+        
+        <div class="project-detail">
+          <span class="detail-label">Tasks</span>
+          <span class="task-count">{{project.totalTasks}} tasks</span>
+        </div>
+      </div>
+      
+      <div class="project-footer">
+        <button class="btn-secondary small" (click)="viewProjectDetails(project)">View Details</button>
+        <button class="btn-primary small" (click)="manageProjectTasks(project)">Manage Tasks</button>
+      </div>
+    </app-card>
+  </div>
+  
+  <!-- Empty State -->
+  <app-card *ngIf="filteredProjects.length === 0">
+    <div class="empty-state">
+      <p>No projects found matching your criteria.</p>
+      <button class="btn-primary" (click)="openCreateProjectModal()">Create Your First Project</button>
+    </div>
   </app-card>
 </div>
+
+<!-- Create/Edit Project Modal -->
+<div class="modal-overlay" *ngIf="showProjectModal">

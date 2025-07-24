@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { TasksComponent } from './pages/tasks/tasks';
-import { Projects } from './pages/projects/projects';
+import { ProjectsComponent } from './pages/projects/projects';
 import { Teams } from './pages/teams/teams';
 import { Reports } from './pages/reports/reports';
 import { Profile } from './pages/profile/profile';
@@ -14,7 +14,7 @@ const rountes: Routes = [
     { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
     { path: 'dashboard', component: Dashboard },
     { path: 'tasks', component: TasksComponent },
-    { path: 'projects', component: Projects },
+    { path: 'projects', component: ProjectsComponent },
     { path: 'teams', component: Teams },
     { path: 'reports', component: Reports },
     { path: 'profile', component: Profile },
