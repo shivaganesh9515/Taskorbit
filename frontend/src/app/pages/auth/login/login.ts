@@ -7,11 +7,12 @@ import { AuthService, LoginRequest } from '../../../auth/auth';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
   imports: [CommonModule, FormsModule, Card, RouterModule]
 })
-export class LoginComponent {
+export class Login {
   credentials: LoginRequest = {
     email: '',
     password: ''

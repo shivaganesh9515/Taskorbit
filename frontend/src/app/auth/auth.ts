@@ -24,12 +24,12 @@ export interface SignupRequest {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
-  
+
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
@@ -39,23 +39,26 @@ export class AuthService {
       id: 1,
       email: 'admin@taskorbit.com',
       name: 'John Doe',
-      role: 'admin'
+      role: 'admin',
     },
     {
       id: 2,
       email: 'manager@taskorbit.com',
       name: 'Jane Smith',
-      role: 'manager'
+      role: 'manager',
     },
     {
       id: 3,
       email: 'user@taskorbit.com',
       name: 'Mike Johnson',
-      role: 'user'
-    }
+      role: 'user',
+    },
   ];
 
-  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
     // Check if user is already logged in on app start
     if (isPlatformBrowser(this.platformId)) {
       this.checkStoredAuth();
@@ -63,30 +66,32 @@ export class AuthService {
   }
 
   // Login method
-  login(credentials: LoginRequest): Observable<{ success: boolean; message: string; user?: User }> {
-    return new Observable(observer => {
+  login(
+    credentials: LoginRequest
+  ): Observable<{ success: boolean; message: string; user?: User }> {
+    return new Observable((observer) => {
       setTimeout(() => {
         // Find user by email
-        const user = this.users.find(u => u.email === credentials.email);
-        
+        const user = this.users.find((u) => u.email === credentials.email);
+
         if (user && this.validatePassword(credentials.password)) {
           // Store authentication
           localStorage.setItem('taskorbit_token', 'mock-jwt-token');
           localStorage.setItem('taskorbit_user', JSON.stringify(user));
-          
+
           // Update subjects
           this.currentUserSubject.next(user);
           this.isAuthenticatedSubject.next(true);
-          
+
           observer.next({
             success: true,
             message: 'Login successful',
-            user: user
+            user: user,
           });
         } else {
           observer.next({
             success: false,
-            message: 'Invalid email or password'
+            message: 'Invalid email or password',
           });
         }
         observer.complete();
@@ -95,49 +100,51 @@ export class AuthService {
   }
 
   // Signup method
-  signup(data: SignupRequest): Observable<{ success: boolean; message: string; user?: User }> {
-    return new Observable(observer => {
+  signup(
+    data: SignupRequest
+  ): Observable<{ success: boolean; message: string; user?: User }> {
+    return new Observable((observer) => {
       setTimeout(() => {
         // Check if email already exists
-        const existingUser = this.users.find(u => u.email === data.email);
-        
+        const existingUser = this.users.find((u) => u.email === data.email);
+
         if (existingUser) {
           observer.next({
             success: false,
-            message: 'Email already registered'
+            message: 'Email already registered',
           });
         } else if (data.password !== data.confirmPassword) {
           observer.next({
             success: false,
-            message: 'Passwords do not match'
+            message: 'Passwords do not match',
           });
         } else if (data.password.length < 6) {
           observer.next({
             success: false,
-            message: 'Password must be at least 6 characters'
+            message: 'Password must be at least 6 characters',
           });
         } else {
           // Create new user
           const newUser: User = {
-            id: Math.max(...this.users.map(u => u.id)) + 1,
+            id: Math.max(...this.users.map((u) => u.id)) + 1,
             email: data.email,
             name: data.name,
-            role: 'user'
+            role: 'user',
           };
-          
+
           this.users.push(newUser);
-          
+
           // Auto-login new user
           localStorage.setItem('taskorbit_token', 'mock-jwt-token');
           localStorage.setItem('taskorbit_user', JSON.stringify(newUser));
-          
+
           this.currentUserSubject.next(newUser);
           this.isAuthenticatedSubject.next(true);
-          
+
           observer.next({
             success: true,
             message: 'Account created successfully',
-            user: newUser
+            user: newUser,
           });
         }
         observer.complete();
@@ -149,10 +156,10 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('taskorbit_token');
     localStorage.removeItem('taskorbit_user');
-    
+
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
-    
+
     this.router.navigate(['/login']);
   }
 
@@ -160,7 +167,7 @@ export class AuthService {
   private checkStoredAuth(): void {
     const token = localStorage.getItem('taskorbit_token');
     const userData = localStorage.getItem('taskorbit_user');
-    
+
     if (token && userData) {
       try {
         const user = JSON.parse(userData);

@@ -1,14 +1,24 @@
 import { Component } from '@angular/core';
-import { Sidebar } from '../sidebar/sidebar';
-import { HeaderComponent } from '../header/header';
-import { RouterOutlet } from '@angular/router';
+import { Sidebar } from "../sidebar/sidebar";
+import { Header } from "../header/header";
+import { RouterModule } from "@angular/router";
 
 @Component({
   selector: 'app-main-layout',
-  imports: [Sidebar, HeaderComponent, RouterOutlet],
   templateUrl: './main-layout.html',
-  styleUrl: './main-layout.scss'
+  styleUrls: ['./main-layout.scss'],
+  standalone: true,
+  imports: [Sidebar, Header, RouterModule]
 })
-export class MainLayout {
+export class MainLayoutComponent {
+  sidebarCollapsed = false;
+  showMobileSidebar = false;
 
+  onSidebarToggle(collapsed: boolean) {
+    this.sidebarCollapsed = collapsed;
+  }
+
+  toggleMobileSidebar() {
+    this.showMobileSidebar = !this.showMobileSidebar;
+  }
 }

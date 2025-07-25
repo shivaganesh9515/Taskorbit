@@ -1,32 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { MainLayout } from './layout/main-layout/main-layout';
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { AppRoutingModule } from './app.routes';
+import { MainLayoutComponent } from './layout/main-layout/main-layout';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, MainLayout],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrls: ['./app.scss'],
+  standalone: true,
+  imports: [MainLayoutComponent],
 })
 export class App {
-  protected title = 'frontend';
+  title = 'TaskOrbit';
 }
-
-@NgModule({
-  declarations: [
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    App
-  ],
-  providers: [],
-  bootstrap: []
-})
-export class AppModule { }

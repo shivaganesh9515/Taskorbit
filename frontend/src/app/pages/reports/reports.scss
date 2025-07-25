@@ -1,0 +1,40 @@
+// Custom animations for charts
+.chart-bar {
+    animation: growUp 0.8s ease-out forwards;
+  }
+  
+  @keyframes growUp {
+    from {
+      height: 0%;
+    }
+    to {
+      height: var(--final-height);
+    }
+  }
+  
+  // Custom hover effects for metric cards
+  .metric-card {
+    &:hover {
+      .metric-icon {
+        transform: scale(1.1);
+      }
+    }
+  }
+  
+  // Responsive chart adjustments
+  @media (max-width: 768px) {
+    .chart-container {
+      height: 200px;
+    }
+    
+    .metric-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .metric-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  

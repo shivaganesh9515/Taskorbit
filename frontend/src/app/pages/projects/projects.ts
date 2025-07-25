@@ -252,3 +252,6 @@ export class ProjectsComponent implements OnInit {
     return dueDate < today;
   }
 }
+
+// Export the component with the expected name for routing
+export { ProjectsComponent as Projects };

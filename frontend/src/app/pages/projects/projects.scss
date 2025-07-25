@@ -1,418 +1,106 @@
-.project-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 24px;
-  margin-bottom: 24px;
-  
-  .stat-card {
-    text-align: center;
-    
-    .stat-content {
-      h3 {
-        font-size: 14px;
-        color: #6b7280;
-        margin-bottom: 8px;
-        font-weight: 500;
-      }
-      
-      .stat-number {
-        font-size: 32px;
-        font-weight: 700;
-        color: #1f2937;
-      }
-    }
+// Custom toggle switch styles
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #4f46e5;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+// Profile picture hover effects
+.profile-picture-container {
+  &:hover .profile-picture-overlay {
+    opacity: 1;
   }
 }
 
-.project-filters {
+.profile-picture-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 0;
+  justify-content: center;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+  font-size: 12px;
 }
 
-.search-section {
-  flex: 1;
-  min-width: 250px;
-}
-
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 24px;
-  margin-top: 24px;
-}
-
-.project-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+// Responsive adjustments
+@media (max-width: 1024px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
   
-  .project-header {
+  .profile-sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .profile-nav {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
-    
-    .project-title {
-      flex: 1;
-      
-      h3 {
-        margin: 0 0 8px 0;
-        font-size: 18px;
-        font-weight: 600;
-        color: #1f2937;
-        line-height: 1.3;
-      }
-      
-      .project-status {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 500;
-        text-transform: capitalize;
-        
-        &.status-active {
-          background-color: #dbeafe;
-          color: #1e40af;
-        }
-        
-        &.status-completed {
-          background-color: #d1fae5;
-          color: #065f46;
-        }
-        
-        &.status-on-hold {
-          background-color: #fef3c7;
-          color: #92400e;
-        }
-      }
-    }
-    
-    .project-actions {
-      display: flex;
-      gap: 4px;
-      
-      .action-btn {
-        width: 32px;
-        height: 32px;
-        border: none;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 14px;
-        background-color: #f3f4f6;
-        transition: all 0.2s ease;
-        
-        &:hover {
-          background-color: #e5e7eb;
-        }
-        
-        &.delete {
-          background-color: #fee2e2;
-          &:hover { background-color: #fecaca; }
-        }
-      }
-    }
-  }
-  
-  .project-description {
-    margin-bottom: 20px;
-    flex: 1;
-    
-    p {
-      margin: 0;
-      color: #6b7280;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-  }
-  
-  .project-progress {
-    margin-bottom: 20px;
-    
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      
-      .progress-label {
-        font-size: 14px;
-        font-weight: 500;
-        color: #374151;
-      }
-      
-      .progress-percentage {
-        font-size: 14px;
-        font-weight: 600;
-        color: #4f46e5;
-      }
-    }
-    
-    .progress-bar {
-      height: 8px;
-      background-color: #f3f4f6;
-      border-radius: 4px;
-      overflow: hidden;
-      
-      .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #4f46e5, #7c3aed);
-        transition: width 0.3s ease;
-        border-radius: 4px;
-      }
-    }
-  }
-  
-  .project-details {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
-    
-    .project-detail {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      .detail-label {
-        font-size: 12px;
-        color: #6b7280;
-        font-weight: 500;
-      }
-      
-      .team-avatars {
-        display: flex;
-        gap: 4px;
-        align-items: center;
-        
-        .avatar {
-          width: 24px;
-          height: 24px;
-          background-color: #4f46e5;
-          color: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 10px;
-          font-weight: 600;
-        }
-        
-        .team-count {
-          width: 24px;
-          height: 24px;
-          background-color: #e5e7eb;
-          color: #6b7280;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 10px;
-          font-weight: 600;
-        }
-      }
-      
-      .due-date {
-        font-size: 12px;
-        color: #6b7280;
-        
-        &.overdue {
-          color: #dc2626;
-          font-weight: 500;
-        }
-      }
-      
-      .task-count {
-        font-size: 12px;
-        color: #6b7280;
-      }
-    }
-  }
-  
-  .project-footer {
-    display: flex;
+    overflow-x: auto;
     gap: 8px;
-    margin-top: auto;
+    padding: 16px;
     
-    .btn-secondary.small,
-    .btn-primary.small {
-      padding: 8px 12px;
-      font-size: 12px;
-      flex: 1;
+    button {
+      white-space: nowrap;
+      flex-shrink: 0;
     }
   }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 48px 24px;
-  color: #6b7280;
-  
-  p {
-    margin-bottom: 16px;
-    font-size: 16px;
-  }
-}
-
-// Modal styles
-.modal-content.large {
-  max-width: 700px;
-}
-
-.project-form {
-  padding: 24px;
-  
-  .form-group {
-    margin-bottom: 20px;
-    
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-      color: #374151;
-      font-size: 14px;
-    }
-    
-    input, select, textarea {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: border-color 0.2s ease;
-      
-      &:focus {
-        outline: none;
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-      }
-    }
-    
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-  }
-  
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  
-  .team-selection {
-    .available-members {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 8px;
-      max-height: 150px;
-      overflow-y: auto;
-      padding: 12px;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      background-color: #f9fafb;
-      
-      .member-checkbox {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        
-        input[type="checkbox"] {
-          width: auto;
-          margin: 0;
-        }
-        
-        label {
-          font-size: 14px;
-          margin: 0;
-          cursor: pointer;
-        }
-      }
-    }
-  }
-  
-  .progress-input {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    
-    .progress-slider {
-      flex: 1;
-      height: 6px;
-      -webkit-appearance: none;
-      appearance: none;
-      background: #e5e7eb;
-      border-radius: 3px;
-      outline: none;
-      
-      &::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        background: #4f46e5;
-        border-radius: 50%;
-        cursor: pointer;
-      }
-      
-      &::-moz-range-thumb {
-        width: 20px;
-        height: 20px;
-        background: #4f46e5;
-        border-radius: 50%;
-        cursor: pointer;
-        border: none;
-      }
-    }
-    
-    .progress-value {
-      font-weight: 600;
-      color: #4f46e5;
-      min-width: 45px;
-    }
-  }
-  
-  .form-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-    margin-top: 32px;
-    padding-top: 20px;
-    border-top: 1px solid #e5e7eb;
-  }
-}
-
-// Responsive design
 @media (max-width: 768px) {
-  .project-stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .projects-grid {
+  .profile-form-grid {
     grid-template-columns: 1fr;
   }
   
-  .project-filters {
+  .profile-picture-section {
     flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .filter-buttons {
-    justify-content: center;
-  }
-  
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .team-selection .available-members {
-    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 16px;
   }
 }

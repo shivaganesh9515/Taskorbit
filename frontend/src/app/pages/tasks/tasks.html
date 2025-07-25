@@ -1,22 +1,299 @@
-<div class="page-container">
-  <div class="page-header">
-    <h1>Tasks</h1>
-    <button class="btn-primary">+ New Task</button>
+<div class="max-w-7xl mx-auto px-6 py-8">
+  <!-- Tasks Header -->
+  <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 mb-8">
+    <div>
+      <h1 class="text-4xl font-bold text-taskorbit-text-primary mb-2">Tasks</h1>
+      <p class="text-lg text-taskorbit-text-secondary">Manage and track your tasks efficiently</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateTaskModal()">
+      <span>+</span> New Task
+    </button>
   </div>
-  
-  <app-card>
-    <div class="task-filters">
-      <input type="text" placeholder="Search tasks..." class="search-input">
-      <div class="filter-buttons">
-        <button class="filter-btn active">All</button>
-        <button class="filter-btn">Pending</button>
-        <button class="filter-btn">In Progress</button>
-        <button class="filter-btn">Completed</button>
+
+  <!-- Task Statistics -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="glass-card p-6 text-center">
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <span class="text-2xl">📋</span>
+        <h3 class="text-sm font-medium text-taskorbit-text-secondary m-0">Total Tasks</h3>
+      </div>
+      <div class="text-4xl font-bold text-taskorbit-text-primary mb-3 leading-none">{{getTotalTasks()}}</div>
+    </div>
+    
+    <div class="glass-card p-6 text-center">
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <span class="text-2xl">⏳</span>
+        <h3 class="text-sm font-medium text-taskorbit-text-secondary m-0">Pending</h3>
+      </div>
+      <div class="text-4xl font-bold text-taskorbit-text-primary mb-3 leading-none">{{getPendingTasks()}}</div>
+    </div>
+    
+    <div class="glass-card p-6 text-center">
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <span class="text-2xl">🔄</span>
+        <h3 class="text-sm font-medium text-taskorbit-text-secondary m-0">In Progress</h3>
+      </div>
+      <div class="text-4xl font-bold text-taskorbit-text-primary mb-3 leading-none">{{getInProgressTasks()}}</div>
+    </div>
+    
+    <div class="glass-card p-6 text-center">
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <span class="text-2xl">✅</span>
+        <h3 class="text-sm font-medium text-taskorbit-text-secondary m-0">Completed</h3>
+      </div>
+      <div class="text-4xl font-bold text-taskorbit-text-primary mb-3 leading-none">{{getCompletedTasks()}}</div>
+    </div>
+  </div>
+
+  <!-- Task Filters -->
+  <div class="glass-card p-6 mb-8">
+    <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+      <div class="flex-1 max-w-md">
+        <input 
+          type="text" 
+          placeholder="Search tasks..." 
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm transition-colors duration-200 focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+          [(ngModel)]="searchTerm"
+          (input)="filterTasks()">
+      </div>
+      
+      <div class="flex gap-2 flex-wrap">
+        <button 
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+          [class.bg-taskorbit-accent-primary]="selectedFilter === 'all'"
+          [class.text-white]="selectedFilter === 'all'"
+          [class.bg-gray-100]="selectedFilter !== 'all'"
+          [class.text-taskorbit-text-secondary]="selectedFilter !== 'all'"
+          [class.hover:bg-gray-200]="selectedFilter !== 'all'"
+          (click)="setFilter('all')">
+          All Tasks
+        </button>
+        <button 
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+          [class.bg-taskorbit-accent-primary]="selectedFilter === 'pending'"
+          [class.text-white]="selectedFilter === 'pending'"
+          [class.bg-gray-100]="selectedFilter !== 'pending'"
+          [class.text-taskorbit-text-secondary]="selectedFilter !== 'pending'"
+          [class.hover:bg-gray-200]="selectedFilter !== 'pending'"
+          (click)="setFilter('pending')">
+          Pending
+        </button>
+        <button 
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+          [class.bg-taskorbit-accent-primary]="selectedFilter === 'in-progress'"
+          [class.text-white]="selectedFilter === 'in-progress'"
+          [class.bg-gray-100]="selectedFilter !== 'in-progress'"
+          [class.text-taskorbit-text-secondary]="selectedFilter !== 'in-progress'"
+          [class.hover:bg-gray-200]="selectedFilter !== 'in-progress'"
+          (click)="setFilter('in-progress')">
+          In Progress
+        </button>
+        <button 
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+          [class.bg-taskorbit-accent-primary]="selectedFilter === 'completed'"
+          [class.text-white]="selectedFilter === 'completed'"
+          [class.bg-gray-100]="selectedFilter !== 'completed'"
+          [class.text-taskorbit-text-secondary]="selectedFilter !== 'completed'"
+          [class.hover:bg-gray-200]="selectedFilter !== 'completed'"
+          (click)="setFilter('completed')">
+          Completed
+        </button>
       </div>
     </div>
-  </app-card>
-  
-  <app-card>
-    <p>Task management interface will be built here.</p>
-  </app-card>
+  </div>
+
+  <!-- Tasks List -->
+  <div class="space-y-4" *ngIf="filteredTasks.length > 0">
+    <div class="glass-card p-6 hover:-translate-y-0.5 transition-all duration-300" *ngFor="let task of filteredTasks">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex items-start gap-4 flex-1">
+          <!-- Task Status Checkbox -->
+          <button 
+            class="w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 mt-1"
+            [class.border-green-500]="task.status === 'completed'"
+            [class.bg-green-500]="task.status === 'completed'"
+            [class.border-blue-500]="task.status === 'in-progress'"
+            [class.bg-blue-100]="task.status === 'in-progress'"
+            [class.border-gray-300]="task.status === 'pending'"
+            (click)="toggleTaskStatus(task)">
+            <span *ngIf="task.status === 'completed'" class="text-white text-xs">✓</span>
+            <span *ngIf="task.status === 'in-progress'" class="text-blue-600 text-xs">●</span>
+          </button>
+          
+          <!-- Task Content -->
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <h3 class="text-lg font-semibold text-taskorbit-text-primary"
+                  [class.line-through]="task.status === 'completed'"
+                  [class.opacity-60]="task.status === 'completed'">
+                {{task.name}}
+              </h3>
+              
+              <!-- Priority Badge -->
+              <span class="px-2 py-1 rounded-full text-xs font-medium"
+                    [class.bg-red-100]="task.priority === 'high'"
+                    [class.text-red-800]="task.priority === 'high'"
+                    [class.bg-yellow-100]="task.priority === 'medium'"
+                    [class.text-yellow-800]="task.priority === 'medium'"
+                    [class.bg-green-100]="task.priority === 'low'"
+                    [class.text-green-800]="task.priority === 'low'">
+                {{task.priority}} priority
+              </span>
+              
+              <!-- Status Badge -->
+              <span class="px-2 py-1 rounded-full text-xs font-medium"
+                    [class.bg-gray-100]="task.status === 'pending'"
+                    [class.text-gray-800]="task.status === 'pending'"
+                    [class.bg-blue-100]="task.status === 'in-progress'"
+                    [class.text-blue-800]="task.status === 'in-progress'"
+                    [class.bg-green-100]="task.status === 'completed'"
+                    [class.text-green-800]="task.status === 'completed'">
+                {{task.status}}
+              </span>
+            </div>
+            
+            <p class="text-taskorbit-text-secondary mb-3"
+               [class.line-through]="task.status === 'completed'"
+               [class.opacity-60]="task.status === 'completed'">
+              {{task.description}}
+            </p>
+            
+            <div class="flex items-center gap-4 text-sm text-taskorbit-text-secondary">
+              <div class="flex items-center gap-1">
+                <span>📁</span>
+                <span>{{task.project}}</span>
+              </div>
+              <div class="flex items-center gap-1"
+                   [class.text-red-600]="isOverdue(task.dueDate) && task.status !== 'completed'">
+                <span>📅</span>
+                <span>{{formatDate(task.dueDate)}}</span>
+                <span *ngIf="isOverdue(task.dueDate) && task.status !== 'completed'" class="text-red-600 font-medium">
+                  (Overdue)
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Task Actions -->
+        <div class="flex items-center gap-2">
+          <button 
+            class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+            (click)="editTask(task)"
+            title="Edit Task">
+            <span class="text-sm">✏️</span>
+          </button>
+          <button 
+            class="p-2 rounded-lg bg-red-100 hover:bg-red-200 transition-colors duration-200"
+            (click)="deleteTask(task.id)"
+            title="Delete Task">
+            <span class="text-sm">🗑️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="glass-card p-12 text-center" *ngIf="filteredTasks.length === 0">
+    <div class="text-6xl mb-4">📝</div>
+    <h3 class="text-xl font-semibold text-taskorbit-text-primary mb-2">No tasks found</h3>
+    <p class="text-taskorbit-text-secondary mb-6">
+      {{searchTerm ? 'No tasks match your search criteria.' : 'Get started by creating your first task.'}}
+    </p>
+    <button class="btn btn-primary" (click)="openCreateTaskModal()">
+      <span>+</span> Create Task
+    </button>
+  </div>
+</div>
+
+<!-- Create/Edit Task Modal -->
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" 
+     *ngIf="showTaskModal"
+     (click)="closeTaskModal()">
+  <div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+       (click)="$event.stopPropagation()">
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-semibold text-taskorbit-text-primary">
+          {{isEditMode ? 'Edit Task' : 'Create New Task'}}
+        </h3>
+        <button class="text-gray-400 hover:text-gray-600 text-2xl" (click)="closeTaskModal()">×</button>
+      </div>
+    </div>
+    
+    <form class="p-6 space-y-4" (ngSubmit)="saveTask()">
+      <div>
+        <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Task Name</label>
+        <input 
+          type="text" 
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+          [(ngModel)]="currentTask.name"
+          name="name"
+          required>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Description</label>
+        <textarea 
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20 resize-y min-h-20"
+          [(ngModel)]="currentTask.description"
+          name="description"
+          rows="3"></textarea>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Priority</label>
+          <select 
+            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+            [(ngModel)]="currentTask.priority"
+            name="priority">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Status</label>
+          <select 
+            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+            [(ngModel)]="currentTask.status"
+            name="status">
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Project</label>
+        <input 
+          type="text" 
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+          [(ngModel)]="currentTask.project"
+          name="project">
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Due Date</label>
+        <input 
+          type="date" 
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+          [(ngModel)]="currentTask.dueDate"
+          name="dueDate">
+      </div>
+      
+      <div class="flex gap-3 pt-4">
+        <button type="button" class="btn btn-glass flex-1" (click)="closeTaskModal()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary flex-1">
+          {{isEditMode ? 'Update Task' : 'Create Task'}}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

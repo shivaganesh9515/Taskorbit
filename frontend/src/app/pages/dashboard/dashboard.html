@@ -1,86 +1,136 @@
-<div class="dashboard-container">
-  <div class="dashboard-grid">
-    <app-card class="stats-card">
-      <div class="stat-content">
-        <h3>Total Tasks</h3>
-        <div class="stat-number">24</div>
-        <span class="stat-change positive">+12% from last week</span>
+<!-- Dashboard Container -->
+<div class="dashboard-wrapper">
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <div class="welcome-content">
+      <div class="greeting">
+        <h1 class="welcome-title">
+          Good {{ getTimeOfDay() }}, {{ getUserFirstName() }}! 
+          <span class="wave-emoji">👋</span>
+        </h1>
+        <p class="welcome-subtitle">
+          Here's your productivity overview for today
+        </p>
       </div>
-    </app-card>
-
-    <app-card class="stats-card">
-      <div class="stat-content">
-        <h3>Completed</h3>
-        <div class="stat-number">18</div>
-        <span class="stat-change positive">+8% from last week</span>
+      <div class="welcome-actions">
+        <button class="action-btn secondary">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 2.79043 19.5304 2.79043 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Export Data
+        </button>
+        <button class="action-btn primary">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+            <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Quick Add
+        </button>
       </div>
-    </app-card>
+    </div>
+  </div>
 
-    <app-card class="stats-card">
-      <div class="stat-content">
-        <h3>In Progress</h3>
-        <div class="stat-number">4</div>
-        <span class="stat-change neutral">No change</span>
-      </div>
-    </app-card>
-
-    <app-card class="stats-card">
-      <div class="stat-content">
-        <h3>Overdue</h3>
-        <div class="stat-number">2</div>
-        <span class="stat-change negative">+1 from last week</span>
-      </div>
-    </app-card>
-
-    <app-card class="recent-tasks">
-      <h3>Recent Tasks</h3>
-      <div class="task-list">
-        <div class="task-item">
-          <div class="task-info">
-            <span class="task-name">Update user interface</span>
-            <span class="task-project">Taskorbit Project</span>
-          </div>
-          <span class="task-status in-progress">In Progress</span>
+  <!-- Stats Grid -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card" *ngFor="let stat of dashboardStats" [attr.data-type]="stat.type">
+        <div class="stat-icon-wrapper">
+          <div class="stat-icon">{{ stat.icon }}</div>
         </div>
-        <div class="task-item">
-          <div class="task-info">
-            <span class="task-name">Database optimization</span>
-            <span class="task-project">Backend Team</span>
+        <div class="stat-content">
+          <h3 class="stat-title">{{ stat.title }}</h3>
+          <div class="stat-value">{{ stat.value }}</div>
+          <div class="stat-change" [class]="stat.trend">
+            <span class="trend-icon">{{ getTrendIcon(stat.trend) }}</span>
+            <span class="trend-text">{{ stat.change }}</span>
           </div>
-          <span class="task-status completed">Completed</span>
-        </div>
-        <div class="task-item">
-          <div class="task-info">
-            <span class="task-name">User testing</span>
-            <span class="task-project">UX Research</span>
-          </div>
-          <span class="task-status pending">Pending</span>
         </div>
       </div>
-    </app-card>
+    </div>
+  </div>
 
-    <app-card class="project-overview">
-      <h3>Project Overview</h3>
-      <div class="project-list">
-        <div class="project-item">
-          <div class="project-name">Taskorbit Development</div>
-          <div class="project-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 75%"></div>
+  <!-- Main Content -->
+  <div class="content-section">
+    <div class="content-grid">
+      <!-- Activity Feed -->
+      <div class="activity-section">
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-title">
+              <h3>Recent Activity</h3>
+              <span class="activity-count">{{ recentActivities.length }} updates</span>
             </div>
-            <span class="progress-text">75% Complete</span>
+            <button class="view-all-btn">View All</button>
           </div>
-        </div>
-        <div class="project-item">
-          <div class="project-name">Mobile App Design</div>
-          <div class="project-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 45%"></div>
+          
+          <div class="activity-feed">
+            <div class="activity-item" *ngFor="let activity of recentActivities; let i = index">
+              <div class="activity-timeline">
+                <div class="timeline-dot" [class]="activity.type"></div>
+                <div class="timeline-line" *ngIf="i < recentActivities.length - 1"></div>
+              </div>
+              <div class="activity-content">
+                <div class="activity-header">
+                  <div class="user-avatar">{{ activity.user[0] }}</div>
+                  <div class="activity-meta">
+                    <p class="activity-text">
+                      <strong>{{ activity.user }}</strong> {{ activity.text }}
+                    </p>
+                    <span class="activity-time">{{ activity.time }}</span>
+                  </div>
+                </div>
+                <div class="activity-status" [class]="activity.type">
+                  {{ activity.status }}
+                </div>
+              </div>
             </div>
-            <span class="progress-text">45% Complete</span>
           </div>
         </div>
       </div>
-    </app-card>
+
+      <!-- Sidebar -->
+      <div class="sidebar-section">
+        <!-- Quick Actions -->
+        <div class="section-card quick-actions">
+          <div class="section-header">
+            <h3 class="section-title">Quick Actions</h3>
+          </div>
+          <div class="quick-actions-grid">
+            <button class="quick-action-item" *ngFor="let action of quickActions">
+              <div class="action-icon">{{ action.icon }}</div>
+              <span class="action-label">{{ action.label }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="section-card progress-overview">
+          <div class="section-header">
+            <h3 class="section-title">Project Progress</h3>
+          </div>
+          <div class="progress-list">
+            <div class="progress-item" *ngFor="let project of projectProgress">
+              <div class="progress-header">
+                <span class="project-name">{{ project.name }}</span>
+                <span class="progress-percentage">{{ project.progress }}%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-fill" 
+                       [style.width.%]="project.progress"
+                       [class]="'status-' + project.status">
+                  </div>
+                </div>
+                <span class="progress-status" [class]="project.status">
+                  {{ project.status === 'on-track' ? 'On Track' : 'Delayed' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

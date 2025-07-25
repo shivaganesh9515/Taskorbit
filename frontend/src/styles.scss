@@ -1,114 +1,175 @@
-@use '@angular/material' as mat;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-html {
-  @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
-  color-scheme: light;
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-}/* You can add global styles to this file, and also import other style files */
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #EDF8FC;
-  color: #1f2937;
-}
-
-html, body {
-  height: 100%;
-}
-
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
+// Custom Taskorbit utilities and components
+@layer base {
+  * {
+    @apply box-border;
+  }
   
-  h1 {
-    font-size: 28px;
-    font-weight: 700;
-    color: #1f2937;
-    margin: 0;
+  body {
+    @apply bg-taskorbit-primary-bg text-taskorbit-text-primary font-sans;
+    @apply m-0 p-0 leading-relaxed text-sm;
+  }
+  
+  html, body {
+    @apply h-full;
   }
 }
 
-.btn-primary {
-  background-color: #4f46e5;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+@layer components {
+  // Glass effect component classes
+  .glass-card {
+    @apply bg-taskorbit-glass-white backdrop-blur-glass rounded-glass;
+    @apply border border-taskorbit-glass-border shadow-glass;
+    @apply transition-all duration-300 ease-out;
+    
+    &:hover {
+      @apply -translate-y-0.5 shadow-glass-lg;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    
+    &.card-elevated {
+      @apply shadow-glass-xl -translate-y-1;
+    }
+    
+    &.card-interactive {
+      @apply cursor-pointer;
+      
+      &:active {
+        @apply translate-y-0 shadow-glass;
+      }
+    }
+  }
   
-  &:hover {
-    background-color: #4338ca;
+  // Button components
+  .btn {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply px-5 py-3 rounded-xl font-medium text-sm cursor-pointer;
+    @apply transition-all duration-200 ease-out;
+    @apply border-0 no-underline;
+    
+    &.btn-primary {
+      @apply bg-gradient-to-r from-taskorbit-accent-primary to-taskorbit-accent-secondary;
+      @apply text-white shadow-glass;
+      
+      &:hover {
+        @apply -translate-y-0.5 shadow-glass-lg;
+      }
+    }
+    
+    &.btn-glass {
+      @apply bg-taskorbit-glass-white backdrop-blur-glass;
+      @apply border border-taskorbit-glass-border text-taskorbit-text-primary;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.9);
+      }
+    }
+    
+    &.btn-sm {
+      @apply px-4 py-2 text-xs;
+    }
+    
+    &.btn-lg {
+      @apply px-6 py-4 text-base;
+    }
+  }
+  
+  // Page layout components
+  .page-container {
+    @apply max-w-7xl mx-auto;
+  }
+  
+  .page-header {
+    @apply flex justify-between items-center mb-8;
+    
+    h1 {
+      @apply text-3xl font-bold text-taskorbit-text-primary m-0;
+    }
+  }
+  
+  // Form components
+  .form-group {
+    @apply mb-5;
+    
+    label {
+      @apply block mb-1.5 font-medium text-taskorbit-text-primary text-sm;
+    }
+    
+    input, select, textarea {
+      @apply w-full px-4 py-3 border border-gray-200 rounded-lg text-sm;
+      @apply transition-colors duration-200 ease-out;
+      @apply focus:outline-none focus:border-taskorbit-accent-primary;
+      @apply focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20;
+    }
+    
+    textarea {
+      @apply resize-y min-h-20;
+    }
+  }
+  
+  // Dashboard specific components
+  .stats-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8;
+  }
+  
+  .stat-card {
+    @apply glass-card p-6 text-center;
+    
+    .stat-header {
+      @apply flex items-center justify-center gap-3 mb-4;
+      
+      .stat-icon {
+        @apply text-2xl;
+      }
+      
+      .stat-title {
+        @apply text-sm font-medium text-taskorbit-text-secondary m-0;
+      }
+    }
+    
+    .stat-value {
+      @apply text-4xl font-bold text-taskorbit-text-primary mb-3 leading-none;
+    }
+    
+    .stat-change {
+      @apply flex items-center justify-center gap-1 text-xs font-medium;
+      
+      &.up { @apply text-green-600; }
+      &.down { @apply text-red-500; }
+      &.neutral { @apply text-taskorbit-text-secondary; }
+    }
   }
 }
 
-.search-input {
-  padding: 12px 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 14px;
-  width: 300px;
-  
-  &:focus {
-    outline: none;
-    border-color: #4f46e5;
-  }
-}
-
-.task-filters {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.filter-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.filter-btn {
-  padding: 8px 16px;
-  border: 1px solid #e5e7eb;
-  background: white;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background-color: #f9fafb;
+@layer utilities {
+  // Custom utility classes
+  .text-gradient {
+    @apply bg-gradient-to-r from-taskorbit-accent-primary to-taskorbit-accent-secondary;
+    @apply bg-clip-text text-transparent;
   }
   
-  &.active {
-    background-color: #4f46e5;
-    color: white;
-    border-color: #4f46e5;
+  .border-gradient {
+    border-image: linear-gradient(135deg, #4f46e5, #7c3aed) 1;
+  }
+  
+  // Scrollbar utilities
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-white bg-opacity-30 rounded;
   }
 }

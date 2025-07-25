@@ -1,152 +1,338 @@
-<div class="page-container">
-  <div class="page-header">
-    <h1>Projects</h1>
-    <button class="btn-primary" (click)="openCreateProjectModal()">+ New Project</button>
+<div class="max-w-7xl mx-auto px-6 py-8">
+  <!-- Projects Header -->
+  <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 mb-8">
+    <div>
+      <h1 class="text-4xl font-bold text-taskorbit-text-primary mb-2">Projects</h1>
+      <p class="text-lg text-taskorbit-text-secondary">Manage and track your projects efficiently</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreateProjectModal()">
+      <span>+</span> New Project
+    </button>
   </div>
   
-  <!-- Project Stats Overview -->
-  <div class="project-stats">
-    <app-card class="stat-card">
-      <div class="stat-content">
-        <h3>Total Projects</h3>
-        <div class="stat-number">{{getTotalProjects()}}</div>
+  <!-- Project Statistics -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="glass-card p-6 text-center">
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <span class="text-2xl">📊</span>
+        <h3 class="text-sm font-medium text-taskorbit-text-secondary m-0">Total Projects</h3>
       </div>
-    </app-card>
+      <div class="text-4xl font-bold text-taskorbit-text-primary mb-3 leading-none">{{getTotalProjects()}}</div>
+    </div>
     
-    <app-card class="stat-card">
-      <div class="stat-content">
-        <h3>Active Projects</h3>
-        <div class="stat-number">{{getActiveProjects()}}</div>
+    <div class="glass-card p-6 text-center">
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <span class="text-2xl">🚀</span>
+        <h3 class="text-sm font-medium text-taskorbit-text-secondary m-0">Active</h3>
       </div>
-    </app-card>
+      <div class="text-4xl font-bold text-taskorbit-text-primary mb-3 leading-none">{{getActiveProjects()}}</div>
+    </div>
     
-    <app-card class="stat-card">
-      <div class="stat-content">
-        <h3>Completed</h3>
-        <div class="stat-number">{{getCompletedProjects()}}</div>
+    <div class="glass-card p-6 text-center">
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <span class="text-2xl">✅</span>
+        <h3 class="text-sm font-medium text-taskorbit-text-secondary m-0">Completed</h3>
       </div>
-    </app-card>
+      <div class="text-4xl font-bold text-taskorbit-text-primary mb-3 leading-none">{{getCompletedProjects()}}</div>
+    </div>
     
-    <app-card class="stat-card">
-      <div class="stat-content">
-        <h3>On Hold</h3>
-        <div class="stat-number">{{getOnHoldProjects()}}</div>
+    <div class="glass-card p-6 text-center">
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <span class="text-2xl">⏸️</span>
+        <h3 class="text-sm font-medium text-taskorbit-text-secondary m-0">On Hold</h3>
       </div>
-    </app-card>
+      <div class="text-4xl font-bold text-taskorbit-text-primary mb-3 leading-none">{{getOnHoldProjects()}}</div>
+    </div>
   </div>
 
   <!-- Project Filters -->
-  <app-card>
-    <div class="project-filters">
-      <div class="search-section">
+  <div class="glass-card p-6 mb-8">
+    <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+      <div class="flex-1 max-w-md">
         <input 
           type="text" 
           placeholder="Search projects..." 
-          class="search-input"
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm transition-colors duration-200 focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
           [(ngModel)]="searchTerm"
           (input)="filterProjects()">
       </div>
       
-      <div class="filter-buttons">
+      <div class="flex gap-2 flex-wrap">
         <button 
-          class="filter-btn" 
-          [class.active]="selectedFilter === 'all'"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+          [class.bg-taskorbit-accent-primary]="selectedFilter === 'all'"
+          [class.text-white]="selectedFilter === 'all'"
+          [class.bg-gray-100]="selectedFilter !== 'all'"
+          [class.text-taskorbit-text-secondary]="selectedFilter !== 'all'"
+          [class.hover:bg-gray-200]="selectedFilter !== 'all'"
           (click)="setFilter('all')">
           All Projects
         </button>
         <button 
-          class="filter-btn" 
-          [class.active]="selectedFilter === 'active'"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+          [class.bg-taskorbit-accent-primary]="selectedFilter === 'active'"
+          [class.text-white]="selectedFilter === 'active'"
+          [class.bg-gray-100]="selectedFilter !== 'active'"
+          [class.text-taskorbit-text-secondary]="selectedFilter !== 'active'"
+          [class.hover:bg-gray-200]="selectedFilter !== 'active'"
           (click)="setFilter('active')">
           Active
         </button>
         <button 
-          class="filter-btn" 
-          [class.active]="selectedFilter === 'completed'"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+          [class.bg-taskorbit-accent-primary]="selectedFilter === 'completed'"
+          [class.text-white]="selectedFilter === 'completed'"
+          [class.bg-gray-100]="selectedFilter !== 'completed'"
+          [class.text-taskorbit-text-secondary]="selectedFilter !== 'completed'"
+          [class.hover:bg-gray-200]="selectedFilter !== 'completed'"
           (click)="setFilter('completed')">
           Completed
         </button>
         <button 
-          class="filter-btn" 
-          [class.active]="selectedFilter === 'on-hold'"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+          [class.bg-taskorbit-accent-primary]="selectedFilter === 'on-hold'"
+          [class.text-white]="selectedFilter === 'on-hold'"
+          [class.bg-gray-100]="selectedFilter !== 'on-hold'"
+          [class.text-taskorbit-text-secondary]="selectedFilter !== 'on-hold'"
+          [class.hover:bg-gray-200]="selectedFilter !== 'on-hold'"
           (click)="setFilter('on-hold')">
           On Hold
         </button>
       </div>
     </div>
-  </app-card>
+  </div>
 
   <!-- Projects Grid -->
-  <div class="projects-grid" *ngIf="filteredProjects.length > 0">
-    <app-card class="project-card" *ngFor="let project of filteredProjects">
-      <div class="project-header">
-        <div class="project-title">
-          <h3>{{project.name}}</h3>
-          <span class="project-status" [class]="'status-' + project.status.replace(' ', '-')">
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8" *ngIf="filteredProjects.length > 0">
+    <div class="glass-card p-6 hover:-translate-y-0.5 transition-all duration-300" *ngFor="let project of filteredProjects">
+      <!-- Project Header -->
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex-1">
+          <h3 class="text-xl font-semibold text-taskorbit-text-primary mb-2">{{project.name}}</h3>
+          <span class="px-3 py-1 rounded-full text-xs font-medium"
+                [class.bg-green-100]="project.status === 'active'"
+                [class.text-green-800]="project.status === 'active'"
+                [class.bg-blue-100]="project.status === 'completed'"
+                [class.text-blue-800]="project.status === 'completed'"
+                [class.bg-yellow-100]="project.status === 'on-hold'"
+                [class.text-yellow-800]="project.status === 'on-hold'">
             {{project.status}}
           </span>
         </div>
-        <div class="project-actions">
-          <button class="action-btn" (click)="editProject(project)">✏️</button>
-          <button class="action-btn delete" (click)="deleteProject(project.id)">🗑️</button>
+        <div class="flex items-center gap-2">
+          <button 
+            class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+            (click)="editProject(project)"
+            title="Edit Project">
+            <span class="text-sm">✏️</span>
+          </button>
+          <button 
+            class="p-2 rounded-lg bg-red-100 hover:bg-red-200 transition-colors duration-200"
+            (click)="deleteProject(project.id)"
+            title="Delete Project">
+            <span class="text-sm">🗑️</span>
+          </button>
         </div>
       </div>
       
-      <div class="project-description">
-        <p>{{project.description}}</p>
+      <!-- Project Description -->
+      <p class="text-taskorbit-text-secondary mb-4 text-sm leading-relaxed">{{project.description}}</p>
+      
+      <!-- Progress Bar -->
+      <div class="mb-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm font-medium text-taskorbit-text-primary">Progress</span>
+          <span class="text-sm font-semibold text-taskorbit-accent-primary">{{project.progress}}%</span>
+        </div>
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-300"
+               [style.width.%]="project.progress"
+               [class.bg-green-400]="project.progress >= 80"
+               [class.bg-blue-400]="project.progress >= 50 && project.progress < 80"
+               [class.bg-yellow-400]="project.progress < 50">
+          </div>
+        </div>
       </div>
       
-      <div class="project-progress">
-        <div class="progress-header">
-          <span class="progress-label">Progress</span>
-          <span class="progress-percentage">{{project.progress}}%</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" [style.width.%]="project.progress"></div>
-        </div>
-      </div>
-      
-      <div class="project-details">
-        <div class="project-detail">
-          <span class="detail-label">Team</span>
-          <div class="team-avatars">
-            <div class="avatar" *ngFor="let member of project.team" [title]="member">
-              {{getInitials(member)}}
+      <!-- Project Details -->
+      <div class="space-y-3 mb-6">
+        <!-- Team Members -->
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-taskorbit-text-primary">Team</span>
+          <div class="flex items-center gap-1">
+            <div class="flex -space-x-2">
+              <div class="w-8 h-8 bg-gradient-to-r from-taskorbit-accent-primary to-taskorbit-accent-secondary rounded-full flex items-center justify-center text-white font-semibold text-xs border-2 border-white"
+                   *ngFor="let member of project.team.slice(0, 3)"
+                   [title]="member">
+                {{getInitials(member)}}
+              </div>
             </div>
-            <div class="team-count" *ngIf="project.team.length > 3">
-              +{{project.team.length - 3}}
-            </div>
+            <span class="text-xs text-taskorbit-text-secondary ml-2" *ngIf="project.team.length > 3">
+              +{{project.team.length - 3}} more
+            </span>
           </div>
         </div>
         
-        <div class="project-detail">
-          <span class="detail-label">Due Date</span>
-          <span class="due-date" [class.overdue]="isOverdue(project.dueDate)">
+        <!-- Due Date -->
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-taskorbit-text-primary">Due Date</span>
+          <span class="text-sm"
+                [class.text-red-600]="isOverdue(project.dueDate)"
+                [class.text-taskorbit-text-secondary]="!isOverdue(project.dueDate)">
             {{formatDate(project.dueDate)}}
+            <span *ngIf="isOverdue(project.dueDate)" class="font-medium">(Overdue)</span>
           </span>
         </div>
         
-        <div class="project-detail">
-          <span class="detail-label">Tasks</span>
-          <span class="task-count">{{project.totalTasks}} tasks</span>
+        <!-- Task Count -->
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-taskorbit-text-primary">Tasks</span>
+          <span class="text-sm text-taskorbit-text-secondary">{{project.totalTasks}} tasks</span>
         </div>
       </div>
       
-      <div class="project-footer">
-        <button class="btn-secondary small" (click)="viewProjectDetails(project)">View Details</button>
-        <button class="btn-primary small" (click)="manageProjectTasks(project)">Manage Tasks</button>
+      <!-- Project Actions -->
+      <div class="flex gap-3">
+        <button class="btn btn-glass flex-1 text-sm py-2" (click)="viewProjectDetails(project)">
+          View Details
+        </button>
+        <button class="btn btn-primary flex-1 text-sm py-2" (click)="manageProjectTasks(project)">
+          Manage Tasks
+        </button>
       </div>
-    </app-card>
+    </div>
   </div>
   
   <!-- Empty State -->
-  <app-card *ngIf="filteredProjects.length === 0">
-    <div class="empty-state">
-      <p>No projects found matching your criteria.</p>
-      <button class="btn-primary" (click)="openCreateProjectModal()">Create Your First Project</button>
-    </div>
-  </app-card>
+  <div class="glass-card p-12 text-center" *ngIf="filteredProjects.length === 0">
+    <div class="text-6xl mb-4">📊</div>
+    <h3 class="text-xl font-semibold text-taskorbit-text-primary mb-2">No projects found</h3>
+    <p class="text-taskorbit-text-secondary mb-6">
+      {{searchTerm ? 'No projects match your search criteria.' : 'Get started by creating your first project.'}}
+    </p>
+    <button class="btn btn-primary" (click)="openCreateProjectModal()">
+      <span>+</span> Create Project
+    </button>
+  </div>
 </div>
 
 <!-- Create/Edit Project Modal -->
-<div class="modal-overlay" *ngIf="showProjectModal">
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" 
+     *ngIf="showProjectModal"
+     (click)="closeProjectModal()">
+  <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+       (click)="$event.stopPropagation()">
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-semibold text-taskorbit-text-primary">
+          {{isEditMode ? 'Edit Project' : 'Create New Project'}}
+        </h3>
+        <button class="text-gray-400 hover:text-gray-600 text-2xl" (click)="closeProjectModal()">×</button>
+      </div>
+    </div>
+    
+    <form class="p-6 space-y-6" (ngSubmit)="saveProject()">
+      <div>
+        <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Project Name</label>
+        <input 
+          type="text" 
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+          [(ngModel)]="currentProject.name"
+          name="name"
+          required>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Description</label>
+        <textarea 
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20 resize-y min-h-24"
+          [(ngModel)]="currentProject.description"
+          name="description"
+          rows="4"></textarea>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Status</label>
+          <select 
+            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+            [(ngModel)]="currentProject.status"
+            name="status">
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+            <option value="on-hold">On Hold</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Priority</label>
+          <select 
+            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+            [(ngModel)]="currentProject.priority"
+            name="priority">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Progress (%)</label>
+          <input 
+            type="number" 
+            min="0" 
+            max="100"
+            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+            [(ngModel)]="currentProject.progress"
+            name="progress">
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Start Date</label>
+          <input 
+            type="date" 
+            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+            [(ngModel)]="currentProject.startDate"
+            name="startDate">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-taskorbit-text-primary mb-2">Due Date</label>
+          <input 
+            type="date" 
+            class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-taskorbit-accent-primary focus:ring-2 focus:ring-taskorbit-accent-primary focus:ring-opacity-20"
+            [(ngModel)]="currentProject.dueDate"
+            name="dueDate">
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium text-taskorbit-text-primary mb-3">Team Members</label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-4">
+          <div *ngFor="let member of availableMembers" class="flex items-center gap-3">
+            <input 
+              type="checkbox" 
+              [id]="member"
+              [checked]="currentProject.team.includes(member)"
+              (change)="toggleTeamMember(member, $event)"
+              class="w-4 h-4 text-taskorbit-accent-primary border-gray-300 rounded focus:ring-taskorbit-accent-primary">
+            <label [for]="member" class="text-sm text-taskorbit-text-primary cursor-pointer">
+              {{member}}
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex gap-3 pt-4">
+        <button type="button" class="btn btn-glass flex-1" (click)="closeProjectModal()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary flex-1">
+          {{isEditMode ? 'Update Project' : 'Create Project'}}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

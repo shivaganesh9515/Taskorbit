@@ -7,11 +7,12 @@ import { AuthService, SignupRequest } from '../../../auth/auth';
 
 @Component({
   selector: 'app-signup',
+  standalone: true,
   templateUrl: './signup.html',
   styleUrls: ['./signup.scss'],
   imports: [CommonModule, FormsModule, Card, RouterModule]
 })
-export class SignupComponent {
+export class Signup {
   signupData: SignupRequest = {
     name: '',
     email: '',

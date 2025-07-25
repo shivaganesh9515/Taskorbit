@@ -1,1 +1,337 @@
-<p>reports works!</p>
+<div class="page-container px-6 py-8">
+  <!-- Reports Header -->
+  <div
+    class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 mb-8"
+  >
+    <div>
+      <h1 class="text-4xl font-bold text-taskorbit-text-primary mb-2">
+        📊 Analytics & Reports
+      </h1>
+      <p class="text-lg text-taskorbit-text-secondary">
+        Get insights into your team's productivity and project progress
+      </p>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <select
+        class="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-taskorbit-accent-primary"
+        [(ngModel)]="selectedTimeRange"
+        (change)="updateReports()"
+      >
+        <option value="7days">Last 7 Days</option>
+        <option value="30days">Last 30 Days</option>
+        <option value="90days">Last 90 Days</option>
+        <option value="1year">Last Year</option>
+      </select>
+
+      <button class="btn btn-glass btn-sm">
+        <span>📤</span> Export Report
+      </button>
+
+      <button class="btn btn-primary btn-sm">
+        <span>📊</span> Generate Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Key Metrics Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div
+      class="glass-card p-6 text-center card-interactive"
+      *ngFor="let metric of keyMetrics"
+    >
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <span class="text-3xl">{{ metric.icon }}</span>
+        <h3
+          class="text-sm font-medium text-taskorbit-text-secondary uppercase tracking-wide"
+        >
+          {{ metric.title }}
+        </h3>
+      </div>
+
+      <div class="text-3xl font-bold text-taskorbit-text-primary mb-2">
+        {{ metric.value }}
+      </div>
+
+      <div
+        class="flex items-center justify-center gap-1 text-sm font-medium"
+        [class.text-green-600]="metric.trend === 'up'"
+        [class.text-red-500]="metric.trend === 'down'"
+        [class.text-taskorbit-text-secondary]="metric.trend === 'neutral'"
+      >
+        <span>{{ getTrendIcon(metric.trend) }}</span>
+        <span>{{ metric.change }}</span>
+      </div>
+
+      <div class="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div
+          class="h-full bg-gradient-to-r from-taskorbit-accent-primary to-taskorbit-accent-secondary rounded-full transition-all duration-500"
+          [style.width.%]="metric.percentage"
+        ></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+    <!-- Task Completion Chart -->
+    <div class="glass-card p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-semibold text-taskorbit-text-primary">
+          Task Completion Trend
+        </h3>
+        <div class="flex gap-2">
+          <button
+            class="px-3 py-1 text-xs font-medium rounded-lg transition-colors duration-200"
+            [class.bg-taskorbit-accent-primary]="chartTimeframe === 'daily'"
+            [class.text-white]="chartTimeframe === 'daily'"
+            [class.bg-gray-100]="chartTimeframe !== 'daily'"
+            [class.text-taskorbit-text-secondary]="chartTimeframe !== 'daily'"
+            (click)="setChartTimeframe('daily')"
+          >
+            Daily
+          </button>
+          <button
+            class="px-3 py-1 text-xs font-medium rounded-lg transition-colors duration-200"
+            [class.bg-taskorbit-accent-primary]="chartTimeframe === 'weekly'"
+            [class.text-white]="chartTimeframe === 'weekly'"
+            [class.bg-gray-100]="chartTimeframe !== 'weekly'"
+            [class.text-taskorbit-text-secondary]="chartTimeframe !== 'weekly'"
+            (click)="setChartTimeframe('weekly')"
+          >
+            Weekly
+          </button>
+          <button
+            class="px-3 py-1 text-xs font-medium rounded-lg transition-colors duration-200"
+            [class.bg-taskorbit-accent-primary]="chartTimeframe === 'monthly'"
+            [class.text-white]="chartTimeframe === 'monthly'"
+            [class.bg-gray-100]="chartTimeframe !== 'monthly'"
+            [class.text-taskorbit-text-secondary]="chartTimeframe !== 'monthly'"
+            (click)="setChartTimeframe('monthly')"
+          >
+            Monthly
+          </button>
+        </div>
+      </div>
+
+      <!-- Simple CSS Chart -->
+      <div class="h-64 flex items-end gap-2 px-4">
+        <div
+          class="flex-1 bg-gradient-to-t from-taskorbit-accent-primary to-taskorbit-accent-secondary rounded-t-lg opacity-80 transition-all duration-500 hover:opacity-100"
+          *ngFor="let bar of chartData; let i = index"
+          [style.height.%]="bar.percentage"
+          [attr.title]="bar.label + ': ' + bar.value"
+        ></div>
+      </div>
+
+      <div
+        class="mt-4 flex justify-between text-xs text-taskorbit-text-secondary"
+      >
+        <span *ngFor="let label of chartLabels">{{ label }}</span>
+      </div>
+    </div>
+
+    <!-- Team Performance -->
+    <div class="glass-card p-6">
+      <h3 class="text-xl font-semibold text-taskorbit-text-primary mb-6">
+        Team Performance
+      </h3>
+
+      <div class="space-y-4">
+        <div
+          class="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
+          *ngFor="let member of teamPerformance"
+        >
+          <div class="flex items-center gap-4">
+            <div
+              class="w-12 h-12 bg-gradient-to-r from-taskorbit-accent-primary to-taskorbit-accent-secondary rounded-full flex items-center justify-center text-white font-semibold"
+            >
+              {{ getInitials(member.name) }}
+            </div>
+            <div>
+              <h4 class="font-medium text-taskorbit-text-primary">
+                {{ member.name }}
+              </h4>
+              <p class="text-sm text-taskorbit-text-secondary">
+                {{ member.role }}
+              </p>
+            </div>
+          </div>
+
+          <div class="text-right">
+            <div class="text-lg font-bold text-taskorbit-text-primary">
+              {{ member.tasksCompleted }}
+            </div>
+            <div class="text-xs text-taskorbit-text-secondary">
+              tasks completed
+            </div>
+          </div>
+
+          <div class="w-20">
+            <div
+              class="flex justify-between text-xs text-taskorbit-text-secondary mb-1"
+            >
+              <span>{{ member.efficiency }}%</span>
+            </div>
+            <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                class="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-500"
+                [style.width.%]="member.efficiency"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Analytics Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Project Status Breakdown -->
+    <div class="glass-card p-6">
+      <h3 class="text-lg font-semibold text-taskorbit-text-primary mb-6">
+        Project Status
+      </h3>
+
+      <!-- Donut Chart Simulation -->
+      <div class="relative w-32 h-32 mx-auto mb-6">
+        <div
+          class="absolute inset-0 rounded-full border-8 border-gray-100"
+        ></div>
+        <div
+          class="absolute inset-0 rounded-full border-8 border-green-400 border-t-transparent border-r-transparent transform rotate-0"
+          style="border-top-color: transparent; border-right-color: transparent"
+        ></div>
+        <div
+          class="absolute inset-4 rounded-full bg-white flex items-center justify-center"
+        >
+          <div class="text-center">
+            <div class="text-xl font-bold text-taskorbit-text-primary">
+              {{ getTotalProjects() }}
+            </div>
+            <div class="text-xs text-taskorbit-text-secondary">Projects</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <div
+          class="flex items-center justify-between"
+          *ngFor="let status of projectStatusData"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-3 h-3 rounded-full"
+              [style.background-color]="status.color"
+            ></div>
+            <span class="text-sm font-medium text-taskorbit-text-primary"
+              >{{ status.label }}</span
+            >
+          </div>
+          <span class="text-sm font-bold text-taskorbit-text-primary"
+            >{{ status.count }}</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity Feed -->
+    <div class="glass-card p-6">
+      <h3 class="text-lg font-semibold text-taskorbit-text-primary mb-6">
+        Recent Activity
+      </h3>
+
+      <div class="space-y-4 max-h-80 overflow-y-auto scrollbar-thin">
+        <div
+          class="flex items-start gap-3"
+          *ngFor="let activity of recentActivities"
+        >
+          <div
+            class="w-8 h-8 bg-taskorbit-accent-primary rounded-full flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 mt-0.5"
+          >
+            {{ activity.user[0] }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm text-taskorbit-text-primary">
+              <span class="font-medium">{{ activity.user }}</span>
+              {{ activity.action }}
+            </p>
+            <p class="text-xs text-taskorbit-text-secondary mt-1">
+              {{ activity.time }}
+            </p>
+          </div>
+          <span
+            class="px-2 py-1 text-xs font-medium rounded-full flex-shrink-0"
+            [class.bg-green-100]="activity.type === 'completed'"
+            [class.text-green-800]="activity.type === 'completed'"
+            [class.bg-blue-100]="activity.type === 'created'"
+            [class.text-blue-800]="activity.type === 'created'"
+            [class.bg-yellow-100]="activity.type === 'updated'"
+            [class.text-yellow-800]="activity.type === 'updated'"
+          >
+            {{ activity.status }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Productivity Insights -->
+    <div class="glass-card p-6">
+      <h3 class="text-lg font-semibold text-taskorbit-text-primary mb-6">
+        Productivity Insights
+      </h3>
+
+      <div class="space-y-6">
+        <div
+          class="text-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100"
+        >
+          <div class="text-2xl mb-2">🎯</div>
+          <div class="text-lg font-bold text-green-700">
+            94% Task Success Rate
+          </div>
+          <div class="text-sm text-green-600">+5% from last month</div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-medium text-taskorbit-text-primary"
+              >Most Productive Hour</span
+            >
+            <span class="text-sm font-bold text-taskorbit-accent-primary"
+              >10:00 AM</span
+            >
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-medium text-taskorbit-text-primary"
+              >Average Task Duration</span
+            >
+            <span class="text-sm font-bold text-taskorbit-accent-primary"
+              >2.5 hours</span
+            >
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-medium text-taskorbit-text-primary"
+              >Team Collaboration Score</span
+            >
+            <span class="text-sm font-bold text-taskorbit-accent-primary"
+              >8.7/10</span
+            >
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-gray-100">
+          <div class="text-sm font-medium text-taskorbit-text-primary mb-2">
+            Quick Recommendations
+          </div>
+          <ul class="text-xs text-taskorbit-text-secondary space-y-1">
+            <li>• Schedule important tasks for 10-11 AM</li>
+            <li>• Consider breaking down longer tasks</li>
+            <li>• Increase team collaboration on Project X</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

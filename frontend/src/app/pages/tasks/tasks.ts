@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Card } from '../../shared/card/card';
 
 export interface Task {
@@ -16,7 +18,7 @@ export interface Task {
   selector: 'app-tasks',
   templateUrl: './tasks.html',
   styleUrls: ['./tasks.scss'],
-  imports: [Card]
+  imports: [Card, CommonModule, FormsModule]
 })
 export class TasksComponent implements OnInit {
   
@@ -210,3 +212,5 @@ export class TasksComponent implements OnInit {
     return dueDate < today;
   }
 }
+// Export the component with the expected name for routing
+export { TasksComponent as Tasks };

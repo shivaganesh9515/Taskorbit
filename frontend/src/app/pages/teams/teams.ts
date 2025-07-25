@@ -3,8 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Card } from '../../shared/card/card';
 
-interface Member { name: string; role: string; }
-interface Team {
+interface Member { 
+  name: string; 
+  role: string; 
+}
+
+interface Team {  // Changed from 'Teams' to 'Team' to avoid conflict
   id: number;
   name: string;
   description: string;
@@ -16,11 +20,12 @@ interface Team {
   selector: 'app-teams',
   templateUrl: './teams.html',
   styleUrls: ['./teams.scss'],
+  standalone: true,
   imports: [CommonModule, FormsModule, Card]
 })
-export class TeamsComponent implements OnInit {
+export class Teams implements OnInit {
 
-  teams: Team[] = [
+  teams: Team[] = [  // Changed from 'Teams[]' to 'Team[]'
     {
       id: 1,
       name: 'Frontend Squad',
@@ -49,16 +54,16 @@ export class TeamsComponent implements OnInit {
     'John Doe', 'Mike Johnson', 'Sarah Wilson'
   ];
 
-  memberRoles: Record<string, string> = {};   // temp role store
+  memberRoles: Record<string, string> = {};
 
-  filteredTeams: Team[] = [];
+  filteredTeams: Team[] = [];  // Changed from 'Teams[]' to 'Team[]'
   searchTerm = '';
   selectedFilter = 'all';
 
   /* modal controls */
   showTeamModal = false;
   editMode = false;
-  currentTeam: Team = this.emptyTeam();
+  currentTeam: Team = this.emptyTeam();  // Changed from 'Teams' to 'Team'
 
   ngOnInit(): void {
     this.filteredTeams = [...this.teams];
@@ -98,15 +103,17 @@ export class TeamsComponent implements OnInit {
     this.showTeamModal = true;
   }
 
-  openEditTeamModal(team: Team): void {
+  openEditTeamModal(team: Team): void {  // Changed parameter type from 'Teams' to 'Team'
     this.editMode = true;
-    this.currentTeam = JSON.parse(JSON.stringify(team)); // deep copy
+    this.currentTeam = JSON.parse(JSON.stringify(team));
     this.memberRoles = {};
     team.members.forEach(m => this.memberRoles[m.name] = m.role);
     this.showTeamModal = true;
   }
 
-  closeTeamModal(): void { this.showTeamModal = false; }
+  closeTeamModal(): void { 
+    this.showTeamModal = false; 
+  }
 
   /* ---------- save / delete / archive ---------- */
   saveTeam(): void {
@@ -120,8 +127,7 @@ export class TeamsComponent implements OnInit {
       const idx = this.teams.findIndex(t => t.id === this.currentTeam.id);
       if (idx > -1) this.teams[idx] = { ...this.currentTeam };
     } else {
-      this.currentTeam.id =
-        Math.max(0, ...this.teams.map(t => t.id)) + 1;
+      this.currentTeam.id = Math.max(0, ...this.teams.map(t => t.id)) + 1;
       this.teams.push({ ...this.currentTeam });
     }
 
@@ -129,12 +135,12 @@ export class TeamsComponent implements OnInit {
     this.closeTeamModal();
   }
 
-  toggleArchive(team: Team): void {
+  toggleArchive(team: Team): void {  // Changed parameter type from 'Teams' to 'Team'
     team.archived = !team.archived;
     this.filterTeams();
   }
 
-  manageTeamTasks(team: Team): void {
+  manageTeamTasks(team: Team): void {  // Changed parameter type from 'Teams' to 'Team'
     alert(`Would navigate to Tasks filtered for team: ${team.name}`);
   }
 
@@ -156,7 +162,7 @@ export class TeamsComponent implements OnInit {
     return name.split(' ').map(w => w[0]).join('').toUpperCase();
   }
 
-  emptyTeam(): Team {
+  emptyTeam(): Team {  // Changed return type from 'Teams' to 'Team'
     return {
       id: 0,
       name: '',
